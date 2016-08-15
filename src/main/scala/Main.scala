@@ -10,6 +10,9 @@ object Main extends ServerApp {
     val entries: Seq[Product] = EntryLoader.unsafeReadEntries()
     val repo: ProductRepo = ProductRepo.fixed(entries)
 
-    Server.createServer(repo)(9999, "127.0.0.1")
+    Server.createServer(
+      pageSize = 2,
+      repo = repo
+    )(9999, "127.0.0.1")
   }
 }

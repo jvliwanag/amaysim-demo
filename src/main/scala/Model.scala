@@ -1,8 +1,11 @@
 package me.jvliwanag.amaysimdemo
 
+import java.net.{ URI, URLEncoder }
+import scala.collection.JavaConverters._
+
 import argonaut._
+import org.http4s.util.string._
 import black.door.hate.HalRepresentation
-import java.net.URI
 
 case class ProductCode(value: String) extends AnyVal
 case class DaysExpiry(value: Int) extends AnyVal
@@ -24,7 +27,9 @@ case class Product(
 )
 
 object Product {
-  implicit val halRepresentable: HalRepresentable[Product] = HalRepresentable { p =>
+  implicit val halEncodable: HalEncodable[Product] = HalEncodable[Product](
+    p => new URI("/products/" + p.code.value.urlEncode)
+  ){ p =>
     import p._
 
     HalRepresentation.builder()
@@ -40,7 +45,6 @@ object Product {
       .addProperty("isAutoRenew", isAutoRenew)
       .addLink("terms", termsUrl)
       .addLink("info", infoUrl)
-      .build()
   }
 
   implicit val _readProductCode: DecodeJson[ProductCode] = DecodeJson.of[String].map(ProductCode)
@@ -51,4 +55,26 @@ object Product {
 
   implicit val _readProduct: DecodeJson[Product] = DecodeJson.derive[Product]
 
+}
+
+case class ProductList(
+  entries: Seq[Product],
+  pageNumber: Long,
+  pageSize: Long
+)
+
+object ProductList {
+  implicit val halEncodable: HalEncodable[ProductList] = HalEncodable[ProductList](
+    _ => new URI("/products")
+  ){ pl =>
+    val pHals = pl.entries.map(HalEncodable.asHalResource[Product])
+
+    HalRepresentation.paginated(
+      "products",
+      "/products",
+      pHals.asJava.stream(),
+      pl.pageNumber,
+      pl.pageSize
+    )
+  }
 }

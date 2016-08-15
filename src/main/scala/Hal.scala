@@ -1,15 +1,36 @@
 package me.jvliwanag.amaysimdemo
 
-import black.door.hate.HalRepresentation
+import black.door.hate._, HalRepresentation.HalRepresentationBuilder
+import java.net.URI
 
-trait HalRepresentable[T] {
-  def asHalRepresentation(v: T): HalRepresentation
-}
+trait HalEncodable[T] { self =>
+  def asHalRepresentation(v: T): HalRepresentation =
+    representationBuilder(v).build()
 
-object HalRepresentable {
-  def apply[T](f: T => HalRepresentation): HalRepresentable[T] = new HalRepresentable[T] {
-    def asHalRepresentation(v: T): HalRepresentation = f(v)
+  def asHalResource(v: T): HalResource = new HalResource {
+    override def location(): URI =
+      self.location(v)
+
+    override def representationBuilder(): HalRepresentationBuilder =
+      self.representationBuilder(v)
   }
 
-  def of[T](implicit r: HalRepresentable[T]): HalRepresentable[T] = r
+  def location(v: T): URI
+  def representationBuilder(v: T): HalRepresentationBuilder
+}
+
+object HalEncodable {
+  def apply[T](f1: T => URI)(f2: T => HalRepresentationBuilder): HalEncodable[T] = new HalEncodable[T] {
+
+    def location(v: T): URI = f1(v)
+    def representationBuilder(v: T): HalRepresentationBuilder = f2(v)
+  }
+
+  def of[T](implicit r: HalEncodable[T]): HalEncodable[T] = r
+
+  def asHalResource[T](v: T)(implicit r: HalEncodable[T]): HalResource =
+    r.asHalResource(v)
+
+  def asHalRepresentation[T](v: T)(implicit r: HalEncodable[T]): HalRepresentation =
+    r.asHalRepresentation(v)
 }
