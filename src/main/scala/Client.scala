@@ -12,7 +12,7 @@ object Client {
     client.expect[Json](baseUrl / "products")
 
   def getProduct(baseUrl: BaseUrl, code: ProductCode): Task[Json] =
-    client.expect[Json](baseUrl / s"products/$code")
+    client.expect[Json](baseUrl / s"products/${code.value}")
 
   def shutdown: Task[Unit] =
     client.shutdown
