@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-dsl" % "0.14.2a",
   "org.http4s" %% "http4s-blaze-server" % "0.14.2a",
   "org.http4s" %% "http4s-blaze-client" % "0.14.2a",
+  "org.http4s" %% "http4s-argonaut" % "0.14.2a",
   "io.argonaut" %% "argonaut" % "6.1a",
   "black.door" % "hate" % "v1r4t0",
 
@@ -31,3 +32,6 @@ libraryDependencies ++= Seq(
   // Test
   "org.scalatest" %% "scalatest" % "3.0.0" % "test"
 )
+
+fork in run := true
+cancelable in Global := true
