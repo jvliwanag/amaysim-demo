@@ -45,6 +45,7 @@ object Product {
       .addProperty("isAutoRenew", isAutoRenew)
       .addLink("terms", termsUrl)
       .addLink("info", infoUrl)
+      .addLink("self", new URI(s"/products/${code.value}"))
   }
 
   implicit val _readProductCode: DecodeJson[ProductCode] = DecodeJson.of[String].map(ProductCode)
