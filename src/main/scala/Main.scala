@@ -11,7 +11,7 @@ object Main {
   val DEFAULT_HOST = "127.0.0.1"
   val DEFAULT_PORT = 9999
   val DEFAULT_PAGE_SIZE = 2l
-  val DEFAULT_BASE_URL = s"http://$DEFAULT_HOST:$DEFAULT_PORT/"
+  val DEFAULT_BASE_URL = "https://amaysim-demo.herokuapp.com/"
 
   sealed trait Mode
   case object RunServer extends Mode
