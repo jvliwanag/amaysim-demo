@@ -13,7 +13,7 @@
   $ git clone git@github.com:jvliwanag/amaysim-demo.git
   $ cd amaysim-demo
   ```
-  
+
 2. Create a distributable fat JAR
 
   ```
@@ -62,3 +62,4 @@ $ sbt assembly herokuDeploy
 
 * Shrink down distributable
 * Clean up links
+* Tests
