@@ -35,3 +35,8 @@ libraryDependencies ++= Seq(
 
 fork in run := true
 cancelable in Global := true
+
+// heroku
+herokuAppName in Compile := "amaysim-demo"
+herokuJdkVersion in Compile := "1.8"
+herokuFatJar in Compile := Some((assemblyOutputPath in assembly).value)

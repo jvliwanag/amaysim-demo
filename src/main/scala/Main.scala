@@ -4,6 +4,7 @@ import argonaut.Json
 import java.util.concurrent.CountDownLatch
 import org.http4s.server.ServerApp
 import org.http4s.server.{Server => HServer}
+import scala.util.Properties
 import scalaz.concurrent.Task
 
 object Main {
@@ -21,9 +22,9 @@ object Main {
     mode: Mode = RunServer,
 
     // server
-    host: String = DEFAULT_HOST,
-    port: Int = DEFAULT_PORT,
-    pageSize: Long = DEFAULT_PAGE_SIZE,
+    host: String = Properties.envOrElse("HOST", DEFAULT_HOST),
+    port: Int = Properties.envOrElse("PORT", s"$DEFAULT_PORT").toInt,
+    pageSize: Long = Properties.envOrElse("PAGE_SIZE", s"$DEFAULT_PAGE_SIZE").toLong,
 
     // client
     baseUrl: String = DEFAULT_BASE_URL,
@@ -43,15 +44,15 @@ object Main {
     ).children(
       opt[String]('H', "host").action((x, c) =>
         c.copy(host = x)
-      ).text(s"default: $DEFAULT_HOST"),
+      ).text(s"default: $DEFAULT_HOST. env var: HOST"),
 
       opt[Int]('p', "port").action((x, c) =>
         c.copy(port = x)
-      ).text(s"default: $DEFAULT_PORT"),
+      ).text(s"default: $DEFAULT_PORT. env var: PORT"),
 
       opt[Long]("page-size").action((x, c) =>
         c.copy(pageSize = x)
-      ).text(s"default: $DEFAULT_PAGE_SIZE")
+      ).text(s"default: $DEFAULT_PAGE_SIZE. env var: PAGE_SIZE")
     )
 
     cmd("get-products").action((_, c) =>
